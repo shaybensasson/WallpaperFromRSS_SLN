@@ -180,7 +180,7 @@ namespace WallpaperFromRSS
                             var outputFileBak = Path.Combine(path,
                                 String.Concat(recentFileName, ".bak", recentFileInfo.Extension));
 
-                            BackupExistingOutputFile(outputFile, outputFileBak);
+                            BackupExistingOutputFile(recentFileInfo.FullName, outputFileBak);
                         }
 
                     }
@@ -238,6 +238,9 @@ namespace WallpaperFromRSS
                    
 
                 File.Copy(sourceFile, destFile);
+
+                //Delete the source after backup
+                fiSource.Delete();
             }
         }
 
