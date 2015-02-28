@@ -23,12 +23,12 @@ namespace WallpaperFromRSS
 
                 Uri rssUri = new Uri(@"http://www.thepaperwall.com/rss.day.php");
 
-                Uri pictureUri = RssReader.GetPictureUri(rssUri);
+                PictureDataItem picDataItem = RssReader.GetPictureData(rssUri);
                 //Console.WriteLine(pictureUri.AbsoluteUri);
 
                 string outputPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
-                Wallpaper.Set(pictureUri, Wallpaper.Style.Stretched, outputPath);
+                Wallpaper.Set(picDataItem, Wallpaper.Style.Stretched, outputPath);
 
                 //Wallpaper.Set(new Uri("http://thepaperwall.com/wallpapers/nature/big/big_76fb211c74d3759fc526f181d13fdef9c094ca2b.jpg"));
             }

@@ -20,7 +20,7 @@ namespace WallpaperFromRSS
         const int SPI_SETDESKWALLPAPER = 20;
         const int SPIF_UPDATEINIFILE = 0x01;
         const int SPIF_SENDWININICHANGE = 0x02;
-        private const string FILENAME = "WallpaperFromRSS";
+        private const string FILENAME_PREFIX = "WallpaperFromRSS";
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
@@ -32,9 +32,9 @@ namespace WallpaperFromRSS
             Stretched
         }
 
-        public static void Set(Uri uri, Style style, string outputPath)
+        public static void Set(PictureDataItem picDataItem, Style style, string outputPath)
         {
-            string savedImagePath = DownloadImageFromUri(uri, outputPath);
+            string savedImagePath = DownloadImageFromUri(picDataItem.Uri, outputPath, picDataItem.Title);
 
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true))
             {
@@ -74,7 +74,7 @@ namespace WallpaperFromRSS
             }
         }
 
-        private static string DownloadImageFromUri(Uri uri, string path)
+        private static string DownloadImageFromUri(Uri uri, string path, string title)
         {
             using (WebClient wc = new WebClient())
             {
@@ -104,14 +104,15 @@ namespace WallpaperFromRSS
 
                 if (convertToBmp)
                 {
+                    //TODO: implement title support
                     outputFile = Path.Combine(path,
-                                                 String.Concat(FILENAME, ".bmp"));
+                                                 String.Concat(FILENAME_PREFIX, ".bmp"));
 
                     var outputFileBak = Path.Combine(path,
-                                String.Concat(FILENAME, ".bak.bmp"));
+                                String.Concat(FILENAME_PREFIX, ".bak.bmp"));
 
                     var tmpFile = Path.Combine(Path.GetTempPath(),
-                                                 String.Concat(FILENAME, ".bmp")); 
+                                                 String.Concat(FILENAME_PREFIX, ".bmp")); 
 
                     using (var msSource = new MemoryStream(fileBytes))
                     {
@@ -152,13 +153,14 @@ namespace WallpaperFromRSS
                 }
                 else
                 {
+                    string fileName = string.Concat(FILENAME_PREFIX, ".", title);
                     outputFile = Path.Combine(path,
-                                                 String.Concat(FILENAME, extension));
+                                                 String.Concat(fileName, extension));
 
                     try
                     {
                         //Remove Any Old Backups, even if they are from another extension
-                        RemoveAnyOldBackups(path, FILENAME, ".bak");
+                        RemoveAnyOldBackups(path, FILENAME_PREFIX, ".bak");
                     }
                     catch (Exception ex)
                     {
@@ -169,11 +171,18 @@ namespace WallpaperFromRSS
 
                     try
                     {
-                        var outputFileBak = Path.Combine(path,
-                                                String.Concat(FILENAME, ".bak", extension));
+                        FileInfo recentFileInfo = FindRecentDownloadedImage(path);
+                        if (recentFileInfo != null) //Something to backup
+                        {
 
-                        BackupExistingOutputFile(outputFile, outputFileBak);
-                        
+                            string recentFileName = recentFileInfo.Name.ReplaceLastOccurrence(recentFileInfo.Extension,
+                                string.Empty);
+                            var outputFileBak = Path.Combine(path,
+                                String.Concat(recentFileName, ".bak", recentFileInfo.Extension));
+
+                            BackupExistingOutputFile(outputFile, outputFileBak);
+                        }
+
                     }
                     // ReSharper disable once EmptyGeneralCatchClause
                     catch (Exception ex)
@@ -189,12 +198,23 @@ namespace WallpaperFromRSS
             }
         }
 
+        private static FileInfo FindRecentDownloadedImage(string path)
+        {
+            var di = new DirectoryInfo(path);
+            var fiRecent = di.GetFiles(string.Format("{0}.*", FILENAME_PREFIX), SearchOption.TopDirectoryOnly)
+                .OrderByDescending(fi => fi.CreationTimeUtc)
+                .FirstOrDefault();
+
+            return fiRecent;
+
+        }
+
         private static void RemoveAnyOldBackups(string path, string filename, string backupExtension)
         {
             var di = new DirectoryInfo(path);
             foreach (
                 var fi in
-                    di.GetFiles(string.Format("{0}*{1}*", filename, backupExtension), SearchOption.TopDirectoryOnly))
+                    di.GetFiles(string.Format("{0}.*{1}*", filename, backupExtension), SearchOption.TopDirectoryOnly))
             {
                 fi.Delete();
             }

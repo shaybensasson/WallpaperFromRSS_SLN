@@ -11,7 +11,7 @@ namespace WallpaperFromRSS
 {
     public static class RssReader
     {
-        public static Uri GetPictureUri(Uri rssUri)
+        public static PictureDataItem GetPictureData(Uri rssUri)
         {
             //www.haiders.net | Jan 2010
             //C# Example: Fetch and Shape RSS Feed
@@ -48,7 +48,7 @@ namespace WallpaperFromRSS
 
                 imageUrl = imageUrl.Replace("/small/small_", "/big/big_");
 
-                return new Uri(imageUrl, UriKind.Absolute);
+                return new PictureDataItem() {Title = rssItem.Title, Uri = new Uri(imageUrl, UriKind.Absolute)};
             }
         }
 
