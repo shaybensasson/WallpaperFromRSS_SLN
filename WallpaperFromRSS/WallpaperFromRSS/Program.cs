@@ -28,6 +28,10 @@ namespace WallpaperFromRSS
 
                 string outputPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
+                outputPath = Path.Combine(outputPath, "Wallpapers");
+                if (!Directory.Exists(outputPath))
+                    Directory.CreateDirectory(outputPath);
+
                 Wallpaper.Set(picDataItem, Wallpaper.Style.Stretched, outputPath);
 
                 //Wallpaper.Set(new Uri("http://thepaperwall.com/wallpapers/nature/big/big_76fb211c74d3759fc526f181d13fdef9c094ca2b.jpg"));
