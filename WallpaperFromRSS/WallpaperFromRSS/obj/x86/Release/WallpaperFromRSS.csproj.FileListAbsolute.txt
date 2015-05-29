@@ -4,4 +4,3 @@ c:\Projects\WallpaperFromRSS_SLN\WallpaperFromRSS\WallpaperFromRSS\obj\x86\Relea
 c:\Projects\WallpaperFromRSS_SLN\WallpaperFromRSS\WallpaperFromRSS\obj\x86\Release\WallpaperFromRSS.csproj.GenerateResource.Cache
 c:\Projects\WallpaperFromRSS_SLN\WallpaperFromRSS\WallpaperFromRSS\obj\x86\Release\WallpaperFromRSS.exe
 c:\Projects\WallpaperFromRSS_SLN\WallpaperFromRSS\WallpaperFromRSS\obj\x86\Release\WallpaperFromRSS.pdb
-C:\Projects\WallpaperFromRSS_SLN\WallpaperFromRSS\WallpaperFromRSS\obj\x86\Release\WallpaperFromRSS.csprojResolveAssemblyReference.cache
