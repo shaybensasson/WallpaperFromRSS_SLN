@@ -165,6 +165,7 @@ namespace WallpaperFromRSS
                         //Remove Any Old Backups, even if they are from another extension
                         RemoveAnyOldBackups(path, FILENAME_PREFIX, ".bak");
                     }
+// ReSharper disable once UnusedVariable
                     catch (Exception ex)
                     {
                         #if DEBUG
