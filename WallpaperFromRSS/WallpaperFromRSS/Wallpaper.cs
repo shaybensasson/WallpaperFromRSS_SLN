@@ -76,6 +76,9 @@ namespace WallpaperFromRSS
 
         private static string DownloadImageFromUri(Uri uri, string path, string title)
         {
+            //clears invalid filenames (ex. Digital/Artwork -> DigitalArtwork)
+            title = PathValidation.CleanFileName(title);
+
             using (WebClient wc = new WebClient())
             {
                 byte[] fileBytes = wc.DownloadData(uri.AbsoluteUri);
