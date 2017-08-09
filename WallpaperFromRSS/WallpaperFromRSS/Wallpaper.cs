@@ -81,7 +81,10 @@ namespace WallpaperFromRSS
 
             using (WebClient wc = new WebClient())
             {
+                Console.WriteLine("Downloading data from {0} ...", uri.AbsoluteUri);
                 byte[] fileBytes = wc.DownloadData(uri.AbsoluteUri);
+                Console.WriteLine("Download completed.");
+
                 string fileType = wc.ResponseHeaders[HttpResponseHeader.ContentType];
 
                 if (fileType == null) throw new NullReferenceException(string.Format("Cannot determine file type, because HttpResponseHeader::'{0}' is null.", HttpResponseHeader.ContentType));
